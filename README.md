@@ -1,8 +1,13 @@
-# Termly CLI
+# Termly CLI (Forked)
 
 Access your AI coding assistants from any device. Works with Claude Code, Aider, GitHub Copilot, and any terminal-based AI tool.
 
-## What's New in v1.9
+> [!NOTE]
+> **Fork Features:** This fork adds a new `batch` command for starting multiple AI agents with a single pairing code.
+> - `termly batch klam:frontend klam:backend`
+> - **See [FORK.md](./FORK.md) for full details.**
+
+## What's New in v1.9 (Upstream)
 
 - 🎯 **Pi Coding Agent** - Support for minimal AI coding agent with extensions and 15+ LLM providers
 - 🚀 **Kilo Code CLI** - Full TUI support for agentic engineering CLI with 500+ models
