@@ -10,6 +10,7 @@ const startCommand = require('../lib/commands/start');
 const statusCommand = require('../lib/commands/status');
 const stopCommand = require('../lib/commands/stop');
 const listCommand = require('../lib/commands/list');
+const batchCommand = require('../lib/commands/batch');
 const toolsCommand = require('../lib/commands/tools');
 const configCommand = require('../lib/commands/config');
 const cleanupCommand = require('../lib/commands/cleanup');
@@ -35,11 +36,23 @@ program
   .command('start [directory]', { isDefault: true })
   .description('Start AI tool with remote access')
   .option('--ai <tool>', 'Specify AI tool to use')
-  .option('--ai-args <args>', 'Additional arguments for AI tool (e.g., "--continue" for Claude Code)')
+  .option('--label <name>', 'Unique label for this agent (allows multiple in same directory)')
+  .option('--multi', 'Bypass all existing session checks')
+  .option('--ai-args <args>', 'Additional arguments for AI tool')
+  .option('--continue', 'Continue previous session (supported by Claude Code)')
   .option('--no-auto-detect', 'Disable AI tool auto-detection')
   .option('--debug', 'Enable debug logging')
   .action(async (directory, options) => {
     await startCommand(directory, options);
+  });
+
+// Batch command
+program
+  .command('batch <tools...>')
+  .description('Start multiple AI tools under one pairing session')
+  .option('--ai-args <args>', 'Additional arguments for AI tools')
+  .action(async (tools, options) => {
+    await batchCommand(tools, options);
   });
 
 // Status command
@@ -47,6 +60,7 @@ program
   .command('status')
   .description('Show session status')
   .option('--all', 'Show all sessions including stopped')
+  .option('--label <name>', 'Filter by agent label')
   .action(async (options) => {
     await statusCommand(options);
   });
@@ -56,6 +70,7 @@ program
   .command('stop [session-id]')
   .description('Stop session(s)')
   .option('--all', 'Stop all sessions')
+  .option('--label <name>', 'Stop session with specific label')
   .action(async (sessionId, options) => {
     await stopCommand(sessionId, options);
   });
@@ -102,6 +117,15 @@ program.on('--help', () => {
   console.log('  $ termly start                          # Same as just "termly"');
   console.log('  $ termly tools list                     # List available tools');
   console.log('  $ termly status                         # Show all sessions');
+  console.log('');
+  console.log('Multi-Agent Support:');
+  console.log('  Run multiple agents in the same project using labels:');
+  console.log('    $ termly --label agent-1               # Start first agent');
+  console.log('    $ termly --label agent-2               # Start second agent');
+  console.log('');
+  console.log('Batching Agents:');
+  console.log('  Start multiple tools under ONE QR code:');
+  console.log('    $ termly batch aider claude:agent-2    # Format: tool:label');
   console.log('');
   console.log('Special modes:');
   console.log('  --ai demo    Demo mode for testing (no AI agent installation required)');
