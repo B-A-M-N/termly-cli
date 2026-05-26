@@ -14,6 +14,7 @@ const batchCommand = require('../lib/commands/batch');
 const toolsCommand = require('../lib/commands/tools');
 const configCommand = require('../lib/commands/config');
 const cleanupCommand = require('../lib/commands/cleanup');
+const serverCommand = require('../lib/commands/server');
 
 const program = new Command();
 
@@ -161,6 +162,14 @@ program.on('--help', () => {
   console.log('Support: https://ko-fi.com/termly');
   console.log('');
 });
+
+// Server command — manage local termly server
+program
+  .command('server [action]')
+  .description('Manage local Termly server (start/stop/status/launch)')
+  .action(async (action = 'start') => {
+    await serverCommand(action);
+  });
 
 // Parse arguments
 program.parse(process.argv);
